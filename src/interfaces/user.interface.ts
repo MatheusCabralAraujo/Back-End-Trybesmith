@@ -6,4 +6,13 @@ interface User {
   password: string;
 }
 
-export default User;
+interface UserPayload {
+  username: string;
+  classe: string;
+  level: number;
+}
+
+export {
+  User,
+  UserPayload,
+};

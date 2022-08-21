@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import User from '../interfaces/user.interface';
+import { User } from '../interfaces/user.interface';
 
 const properties = ['username', 'classe', 'level', 'password'];
 

@@ -7,9 +7,9 @@ const router = Router();
 const usersController = new UserController();
 const userSlashId = '/users/:id';
 
-router.get('/products', usersController.getAll);
+router.get('/users', usersController.getAll);
 router.get(userSlashId, usersController.getById);
-router.post('/products/', validationUser, usersController.create);
+router.post('/users/', validationUser, usersController.create);
 router.put(userSlashId, validationUser, usersController.update);
 router.delete(userSlashId, usersController.remove);
 
