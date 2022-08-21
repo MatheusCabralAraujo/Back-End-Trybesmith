@@ -4,4 +4,11 @@ interface Product {
   amount: string;
 }
 
-export default Product;
+interface ProductIds {
+  id: number;
+} 
+
+export {
+  Product,
+  ProductIds,
+};
