@@ -16,7 +16,7 @@ class ProductsController {
 
     if (!product) {
       return res.status(StatusCodes.NOT_FOUND)
-        .json({ message: 'Book not found!' });
+        .json({ message: 'Product not found!' });
     }
 
     res.status(StatusCodes.OK).json(product);
