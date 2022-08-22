@@ -1,5 +1,5 @@
 import { Pool, ResultSetHeader } from 'mysql2/promise';
-import Order from '../interfaces/order.interface';
+import { Order } from '../interfaces/order.interface';
 import { User } from '../interfaces/user.interface';
 
 export default class OrderModel {

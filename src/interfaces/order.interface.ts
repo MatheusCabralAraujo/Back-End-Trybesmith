@@ -4,4 +4,15 @@ interface Order {
   productsIds: number[];
 }
 
-export default Order;
+interface OrderToken {
+  id: number;
+  username: string;
+  classe: string;
+  level: string;
+  password: string;
+}
+
+export {
+  Order,
+  OrderToken,
+};

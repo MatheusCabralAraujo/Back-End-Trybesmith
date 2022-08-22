@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { JwtPayload } from 'jsonwebtoken';
 import OrderService from '../services/orderService';
 import validateToken from '../helpers/jwtValidation';
+import { OrderToken } from '../interfaces/order.interface';
 
 export default class OrderController {
   constructor(private orderService = new OrderService()) { }
@@ -17,8 +17,11 @@ export default class OrderController {
     const { productsIds } = req.body;
 
     const tokenCheck = validateToken(token);
+    if (!tokenCheck) {
+      console.log('falhou');
+    }
 
-    const order = await this.orderService.create(tokenCheck as JwtPayload, productsIds);
+    const order = await this.orderService.create(tokenCheck as unknown as OrderToken, productsIds);
 
     res.status(201).json(order);
   };

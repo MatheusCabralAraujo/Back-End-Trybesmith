@@ -1,8 +1,7 @@
-import { JwtPayload } from 'jsonwebtoken';
 import connection from '../models/connection';
 import OrderModel from '../models/orderModel';
 import ProductModel from '../models/productModel';
-import Order from '../interfaces/order.interface';
+import { Order, OrderToken } from '../interfaces/order.interface';
 
 interface CreatedOrder {
   userId: number,
@@ -23,8 +22,8 @@ export default class OrderService {
     return this.model.getAll();
   }
 
-  public async create(token: JwtPayload, productsIds: number[]): Promise<CreatedOrder> {
-    const { data: { username } } = token;
+  public async create(token: OrderToken, productsIds: number[]): Promise<CreatedOrder> {
+    const { username } = token;
 
     const user = await this.model.getIdByUsername(username);
     const userId = user[0].id as number;
