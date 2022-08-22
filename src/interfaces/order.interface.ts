@@ -4,12 +4,4 @@ interface Order {
   productsIds: number[];
 }
 
-interface OrderWithourProductsIds {
-  id: number;
-  userId: number;
-}
-
-export {
-  Order,
-  OrderWithourProductsIds,
-};
+export default Order;

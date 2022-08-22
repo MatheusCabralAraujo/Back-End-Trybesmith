@@ -34,13 +34,10 @@ export default class ProductModel {
     return { id: insertId, ...product };
   }
 
-  public async update(id: number, product: Product) {
-    const { name, amount } = product;
-    await this.connection.execute(
-      'UPDATE Trybesmith.Products SET name=?, amount=? WHERE id=?',
-      [name, amount, id],
-    );
-  }
+  public update = async (orderId: number, productId: number) => {
+    const query = `UPDATE Trybesmith.Products SET orderId = ${orderId} WHERE id = ${productId};`;
+    await this.connection.execute(query);
+  };
 
   public async remove(id: number) {
     await this.connection.execute(

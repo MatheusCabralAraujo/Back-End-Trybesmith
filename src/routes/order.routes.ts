@@ -1,7 +1,14 @@
-import express from 'express';
-import orderController from '../controller/orderController';
+import { Router } from 'express';
+import OrderController from '../controller/orderController';
+import OrderMiddleware from '../middlewares/orderValidations';
 
-const router = express.Router();
-router.get('/', orderController.getAllOrders);
+const router = Router();
 
-export default router;  
+const orderController = new OrderController();
+const orderMiddleware = new OrderMiddleware();
+
+router.get('/', orderController.getAll);
+
+router.post('/', orderMiddleware.checkToken, orderMiddleware.checkProduct, orderController.create);
+
+export default router;

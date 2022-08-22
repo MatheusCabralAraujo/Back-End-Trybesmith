@@ -35,13 +35,10 @@ export default class UserModel {
     return { id: insertId, ...user };
   }
 
-  public async update(id: number, user: User) {
-    const { username, classe, level, password } = user;
-    await this.connection.execute(
-      'UPDATE Trybesmith.Users SET username=?, classe=?, level=?, password=? WHERE id=?',
-      [username, classe, level, password, id],
-    );
-  }
+  public update = async (orderId: number, productId: number) => {
+    const query = `UPDATE Trybesmith.Products SET orderId = ${orderId} WHERE id = ${productId};`;
+    await this.connection.execute(query);
+  };
 
   public async remove(id: number) {
     await this.connection.execute(

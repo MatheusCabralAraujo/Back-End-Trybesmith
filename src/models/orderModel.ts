@@ -1,27 +1,41 @@
-import { RowDataPacket } from 'mysql2';
-import { Order, OrderWithourProductsIds } from '../interfaces/order.interface';
-import { ProductIds } from '../interfaces/products.interface';
-import connection from './connection';
+import { Pool, ResultSetHeader } from 'mysql2/promise';
+import Order from '../interfaces/order.interface';
+import { User } from '../interfaces/user.interface';
 
-const getAllOrders = async (): Promise<Order[]> => {
-  const q = `
-  SELECT orders.id, orders.userId
-  FROM Trybesmith.Products as products
-  INNER JOIN Trybesmith.Orders as orders
-  ON orders.id = products.orderId
-  GROUP BY orders.id
-  ORDER BY orders.userId
-  `;
-  const [table] = await connection
-    .execute(q) as RowDataPacket[];
-  const orders = Promise.all(table.map(async ({ id, userId }: OrderWithourProductsIds) => {
-    const [product] = await connection
-      .execute(`
-    SELECT Trybesmith.Products.id FROM Trybesmith.Products WHERE orderId = ?
-    `, [id]) as RowDataPacket[];
-    return { id, userId, productsIds: product.map((p: ProductIds) => p.id) };
-  })) as Promise<Order[]>;
-  return orders;
-}; 
+export default class OrderModel {
+  public connection: Pool;
 
-export default { getAllOrders };
+  constructor(connection: Pool) {
+    this.connection = connection;
+  }
+
+  public async getAll(): Promise<Order[]> {
+    const result = await this.connection.execute(
+      `SELECT o.id, o.userId, JSON_ARRAYAGG(p.id) AS productsIds FROM Trybesmith.Orders AS o
+      INNER JOIN Trybesmith.Products AS p ON p.orderId = o.id
+      GROUP BY o.id
+      ORDER BY o.userId`,
+    );
+    const [rows] = result;
+    return rows as Order[];
+  }
+
+  public async getIdByUsername(username: string): Promise<User[]> {
+    const result = await this.connection.execute<ResultSetHeader>(
+      'SELECT * FROM Trybesmith.Users WHERE username=?',
+      [username],
+    );
+    const [rows] = result;
+    return rows as unknown as User[];
+  }
+
+  public async create(userId: number): Promise<number> {  
+    const result = await this.connection.execute<ResultSetHeader>(
+      'INSERT INTO Trybesmith.Orders (userId) VALUES (?)',
+      [userId],
+    );
+    const [dataInserted] = result;
+    const { insertId } = dataInserted;
+    return insertId as number;
+  }
+} 
