@@ -8,7 +8,7 @@ const generateToken = (data: User): string => {
     expiresIn: '1d',
     algorithm: 'HS256',
   } as SignOptions;
-  const privateKey = process.env.JWT_SECRET || 'secret' as Secret;
+  const privateKey = 'suaSenhaSecreta' as Secret;
   const { username, classe, level } = data as UserPayload;
   const token = jwt.sign({ username, classe, level }, privateKey, jwtConfig);
   return token;
