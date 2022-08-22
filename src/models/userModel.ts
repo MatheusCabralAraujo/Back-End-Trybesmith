@@ -1,5 +1,6 @@
 import { Pool, ResultSetHeader } from 'mysql2/promise';
 import { User } from '../interfaces/user.interface';
+import Login from '../interfaces/login.interface';
 
 export default class UserModel {
   public connection: Pool;
@@ -47,5 +48,15 @@ export default class UserModel {
       'DELETE Trybesmith.Users books WHERE id=?',
       [id],
     );
+  }
+
+  public async checkUser(login: Login): Promise<User[]> {
+    const { username, password } = login;
+    const query = `SELECT * FROM Trybesmith.Users 
+    WHERE username='${username}' AND password='${password}'`;
+
+    const [rows] = await this.connection.execute(query);
+
+    return rows as User[];
   }
 }

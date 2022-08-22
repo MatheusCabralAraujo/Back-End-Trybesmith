@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import UserService from '../services/userService';
+import Login from '../interfaces/login.interface';
 
 class UserController {
   constructor(private userService = new UserService()) { }
@@ -42,6 +43,21 @@ class UserController {
     await this.userService.remove(id);
 
     res.status(StatusCodes.OK).json({ message: 'User deleted successfully' });
+  };
+
+  public checkUser = async (req: Request, res: Response) => {
+    const login = req.body;
+    const { username, password } = login;
+
+    if (!username) return res.status(400).json({ message: '"username" is required' });
+
+    if (!password) return res.status(400).json({ message: '"password" is required' });
+
+    const token = await this.userService.checkUser(login as Login);
+
+    if (token === '') return res.status(401).json({ message: 'Username or password invalid' });
+
+    return res.status(200).json({ token });
   };
 }
 
