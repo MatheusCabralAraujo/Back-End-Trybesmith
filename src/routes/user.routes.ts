@@ -1,16 +1,24 @@
 import { Router } from 'express';
 import UserController from '../controller/userController';
-import validationUser from '../middlewares/userValidations';
+import UserMiddleware from '../middlewares/userValidations';
 
 const router = Router();
 
 const usersController = new UserController();
+const userMiddleware = new UserMiddleware();
 const userSlashId = '/users/:id';
 
 router.get('/users', usersController.getAll);
 router.get(userSlashId, usersController.getById);
-router.post('/users/', validationUser, usersController.create);
-router.put(userSlashId, validationUser, usersController.update);
+router.post(
+  '/users/', 
+  userMiddleware.verifyClasse,
+  userMiddleware.verifyLevel,
+  userMiddleware.verifyPassword, 
+  userMiddleware.verifyUsername, 
+  usersController.create,
+);
+router.put(userSlashId, usersController.update);
 router.delete(userSlashId, usersController.remove);
 
 export default router;

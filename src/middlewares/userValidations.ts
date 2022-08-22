@@ -1,49 +1,78 @@
-import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { User } from '../interfaces/user.interface';
+import { Request, Response, NextFunction } from 'express';
+import UserService from '../services/userService';
 
-const properties = ['username', 'classe', 'level', 'password'];
+export default class UserMiddleware {
+  constructor(private userService = new UserService()) { }
 
-function validateProperties(user: User): [boolean, string | null] {
-  for (let i = 0; i < properties.length; i += 1) {
-    if (!Object.prototype.hasOwnProperty.call(user, properties[i])) {
-      return [false, properties[i]];
+  public verifyUsername = async (req: Request, res: Response, next: NextFunction) => {
+    const { username } = req.body;
+
+    if (!username) return res.status(400).json({ message: '"username" is required' });
+
+    if (typeof username !== 'string') {
+      return res.status(422).json({ message: '"username" must be a string' });
     }
-  }
-  return [true, null];
-}
 
-function validateValues(user: User): [boolean, string | null] {
-  const entries = Object.entries(user);
-  for (let i = 0; i < entries.length; i += 1) {
-    const [property, value] = entries[i];
-    if (!value) {
-      return [false, property];
+    if (username.length <= 2) {
+      return res.status(422).json(
+        { message: '"username" length must be at least 3 characters long' },
+      );
     }
-  }
-  return [true, null];
-}
 
-function validationUser(req: Request, res: Response, next: NextFunction) {
-  const user: User = req.body;
+    next();
+  };
 
-  let [valid, property] = validateProperties(user);
+  public verifyClasse = async (req: Request, res: Response, next: NextFunction) => {
+    const { classe } = req.body;
 
-  if (!valid) {
-    return res.status(StatusCodes.BAD_REQUEST).send(
-      `O campo ${property} é obrigatório.`,
-    );
-  }
+    if (!classe) return res.status(400).json({ message: '"classe" is required' });
 
-  [valid, property] = validateValues(user);
+    if (typeof classe !== 'string') {
+      return res.status(422).json({ message: '"classe" must be a string' });
+    }
 
-  if (!valid) {
-    return res.status(StatusCodes.BAD_REQUEST).send(
-      `O campo ${property} não pode ser nulo ou vazio.`,
-    );
-  }
+    if (classe.length <= 2) {
+      return res.status(422).json(
+        { message: '"classe" length must be at least 3 characters long' },
+      );
+    }
 
-  next();
-}
+    next();
+  };
 
-export default validationUser;
+  public verifyLevel = async (req: Request, res: Response, next: NextFunction) => {
+    const { level } = req.body;
+
+    if (level === undefined) return res.status(400).json({ message: '"level" is required' });
+
+    if (typeof level !== 'number') {
+      return res.status(422).json({ message: '"level" must be a number' });
+    }
+
+    if (level < 1) {
+      return res.status(422).json(
+        { message: '"level" must be greater than or equal to 1' },
+      );
+    }
+
+    next();
+  };
+
+  public verifyPassword = async (req: Request, res: Response, next: NextFunction) => {
+    const { password } = req.body;
+
+    if (!password) return res.status(400).json({ message: '"password" is required' });
+
+    if (typeof password !== 'string') {
+      return res.status(422).json({ message: '"password" must be a string' });
+    }
+
+    if (password.length <= 7) {
+      return res.status(422).json(
+        { message: '"password" length must be at least 8 characters long' },
+      );
+    }
+
+    next();
+  };
+} 
