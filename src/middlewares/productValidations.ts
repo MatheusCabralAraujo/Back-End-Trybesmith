@@ -1,49 +1,40 @@
-import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { Product } from '../interfaces/products.interface';
+import { Request, Response, NextFunction } from 'express';
+import ProductService from '../services/productService';
 
-const properties = ['name', 'amount'];
+export default class ProductMiddleware {
+  constructor(private productService = new ProductService()) { }
 
-function validateProperties(product: Product): [boolean, string | null] {
-  for (let i = 0; i < properties.length; i += 1) {
-    if (!Object.prototype.hasOwnProperty.call(product, properties[i])) {
-      return [false, properties[i]];
+  public verifyName = async (req: Request, res: Response, next: NextFunction) => {
+    const { name } = req.body;
+
+    if (!name) return res.status(400).json({ message: '"name" is required' });
+
+    if (typeof name !== 'string') {
+      return res.status(422).json({ message: '"name" must be a string' });
     }
-  }
-  return [true, null];
-}
 
-function validateValues(product: Product): [boolean, string | null] {
-  const entries = Object.entries(product);
-  for (let i = 0; i < entries.length; i += 1) {
-    const [property, value] = entries[i];
-    if (!value) {
-      return [false, property];
+    if (name.length < 3) {
+      return res.status(422).json({ message: '"name" length must be at least 3 characters long' });
     }
-  }
-  return [true, null];
-}
 
-function validationProduct(req: Request, res: Response, next: NextFunction) {
-  const product: Product = req.body;
+    next();
+  };
 
-  let [valid, property] = validateProperties(product);
+  public verifyAmount = async (req: Request, res: Response, next: NextFunction) => {
+    const { amount } = req.body;
 
-  if (!valid) {
-    return res.status(StatusCodes.BAD_REQUEST).send(
-      `O campo ${property} é obrigatório.`,
-    );
-  }
+    if (!amount) return res.status(400).json({ message: '"amount" is required' });
 
-  [valid, property] = validateValues(product);
+    if (typeof amount !== 'string') {
+      return res.status(422).json({ message: '"amount" must be a string' });
+    }
 
-  if (!valid) {
-    return res.status(StatusCodes.BAD_REQUEST).send(
-      `O campo ${property} não pode ser nulo ou vazio.`,
-    );
-  }
+    if (amount.length < 3) {
+      return res.status(422).json(
+        { message: '"amount" length must be at least 3 characters long' },
+      );
+    }
 
-  next();
-}
-
-export default validationProduct;
+    next();
+  };
+} 
