@@ -7,8 +7,15 @@ const router = Router();
 const orderController = new OrderController();
 const orderMiddleware = new OrderMiddleware();
 
-router.get('/', orderController.getAll);
+router.get('/orders', orderController.getAll);
 
-router.post('/', orderMiddleware.checkToken, orderMiddleware.checkProduct, orderController.create);
+router.post(
+  '/orders', 
+  orderMiddleware.checkToken,
+
+  orderMiddleware.checkProduct,
+
+  orderController.create,
+);
 
 export default router;

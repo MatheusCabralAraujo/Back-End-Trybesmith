@@ -22,11 +22,7 @@ class ProductService {
   public create(product: Product): Promise<Product> {
     return this.model.create(product);
   }
-
-  public async update(id: number, product: Product): Promise<void> {
-    return this.model.update(id, product);
-  }
-
+  
   public async remove(id: number): Promise<void> {
     this.model.remove(id);
   }

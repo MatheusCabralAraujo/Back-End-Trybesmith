@@ -35,11 +35,6 @@ export default class UserModel {
     return { id: insertId, ...user };
   }
 
-  public update = async (orderId: number, productId: number) => {
-    const query = `UPDATE Trybesmith.Products SET orderId = ${orderId} WHERE id = ${productId};`;
-    await this.connection.execute(query);
-  };
-
   public async remove(id: number) {
     await this.connection.execute(
       'DELETE Trybesmith.Users books WHERE id=?',

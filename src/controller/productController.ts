@@ -29,14 +29,6 @@ class ProductsController {
     res.status(StatusCodes.CREATED).json(productCreated);
   };
 
-  public update = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
-    const product = req.body;
-    await this.productService.update(id, product);
-
-    res.status(StatusCodes.NO_CONTENT).end();
-  };
-  
   public remove = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
     await this.productService.remove(id);

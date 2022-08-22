@@ -18,7 +18,6 @@ router.post(
   userMiddleware.verifyUsername, 
   usersController.create,
 );
-router.put(userSlashId, usersController.update);
 router.delete(userSlashId, usersController.remove);
 
 export default router;

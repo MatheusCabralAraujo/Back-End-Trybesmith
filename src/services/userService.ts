@@ -27,10 +27,6 @@ class UserService {
     return token;
   }
 
-  public async update(id: number, user: User): Promise<void> {
-    return this.model.update(id, user);
-  }
-
   public async remove(id: number): Promise<void> {
     this.model.remove(id);
   }

@@ -16,6 +16,7 @@ export default class OrderModel {
       GROUP BY o.id
       ORDER BY o.userId`,
     );
+    console.log('ESTE É O RESULTADO NA MODEL:', result);
     const [rows] = result;
     return rows as Order[];
   }

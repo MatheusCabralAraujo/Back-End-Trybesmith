@@ -30,14 +30,6 @@ class UserController {
     res.status(StatusCodes.CREATED).json({ token });
   };
 
-  public update = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
-    const user = req.body;
-    await this.userService.update(id, user);
-
-    res.status(StatusCodes.NO_CONTENT).end();
-  };
-
   public remove = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
     await this.userService.remove(id);

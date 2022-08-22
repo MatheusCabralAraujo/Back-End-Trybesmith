@@ -26,7 +26,7 @@ export default class OrderMiddleware {
       return res.status(422).json({ message: '"productsIds" must be an array' });
     }
 
-    const hasError = productsIds.some((element: any) => typeof element !== 'number');
+    const hasError = productsIds.some((element: unknown) => typeof element !== 'number');
 
     if (hasError || productsIds.length === 0) {
       return res.status(422).json({ message: '"productsIds" must include only numbers' });

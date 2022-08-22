@@ -18,7 +18,6 @@ router.post(
 
   productsController.create,
 );
-router.put(productSlashId, productsController.update);
 router.delete(productSlashId, productsController.remove);
 
 export default router;
